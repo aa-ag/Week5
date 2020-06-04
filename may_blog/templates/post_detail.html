@@ -16,6 +16,30 @@
 
     <a href="{{ url_for('post_update', post_id = post.id ) }}"><button class="btn btn-primary">Update</button></a>
 
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#dangerModal">Delete post</button>
+
+    <div class="modal fade" id="dangerModal" tabindex="-1" role="dialog" aria-labelledby="dangerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="dangerModalLabel">Deleting cannot be reversed</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                &#9888; Are you 100% sure? &#9888;
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <form action="{{ url_for('post_delete', post_id = post.id) }}" method="post">
+                  <input type="submit" value="Delete?" class="btn btn-danger">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
 </div>
 
 {% endblock content %}

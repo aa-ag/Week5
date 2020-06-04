@@ -60,7 +60,27 @@ def post_update(post_id):
     post = Post.query.get_or_404(post_id)
     update_form = PostForm()
 
+    if request.method == 'POST' and update_form.validate():
+        title = update_form.title.data
+        content = update_form.content.data
+        user_id = current_user.id
+        print(title, content, user_id)
+
+        post.title = title
+        post.content = content
+        post.user_id = user_id
+
+        db.session.commit()
+        return redirect(url_for('home'))
     return render_template('post_update.html', update_form = update_form)
+
+@app.route('/posts/delete/<int:post_id>', methods=['POST'])
+@login_required
+def post_delete(post_id):
+    post = Post.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

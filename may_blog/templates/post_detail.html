@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{{ url_for('home') }}"><button class="btn btn-primary">Return Home</button></a>
+
+<div class="container">
+    <h1>This post belongs to: {{ post.author.username }}</h1>
+
+    <h3>Content:</h3>
+    <hr>
+    <h3>Title: {{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+
+    <blockquote>Date Created: {{ post.date_created }}</blockquote>
+
+    <a href="{{ url_for('post_update', post_id = post.id ) }}"><button class="btn btn-primary">Update</button></a>
+
+</div>
+
+{% endblock content %}

@@ -4,13 +4,10 @@ from may_blog.forms import UserInfoForm, PostForm, LoginForm
 from may_blog.models import User, Post, check_password_hash
 from flask_login import login_required, login_user, current_user, logout_user
 
-
 @app.route('/')
 def home():
-    customer_name = "Aaron"
-    order_number = 1
-    item_dict = {1: "Ice Cream", 2:"Bread", 3:"Lemons", 4:"Cereal"}
-    return render_template("home.html", customer_name = customer_name, order_number = order_number, item_dict = item_dict)
+    posts = Post.query.all()
+    return render_template("home.html", posts = posts)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -40,8 +37,30 @@ def posts():
     if request.method == 'POST' and post.validate():
         title = post.title.data
         content = post.content.data
+        user_id = current_user.id
         print("\n", title, content)
+
+        post = Post(title, content, user_id)
+
+        db.session.add(post)
+
+        db.session.commit()
+        return redirect(url_for('posts'))
     return render_template('posts.html', post = post)
+
+@app.route('/posts/<int:post_id>')
+@login_required
+def post_detail(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post_detail.html', post = post)
+
+@app.route('/posts/update/<int:post_id>', methods = ['GET', 'POST'])
+@login_required
+def post_update(post_id):
+    post = Post.query.get_or_404(post_id)
+    update_form = PostForm()
+
+    return render_template('post_update.html', update_form = update_form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -58,6 +77,7 @@ def login():
     return render_template('login.html', form = form)
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
